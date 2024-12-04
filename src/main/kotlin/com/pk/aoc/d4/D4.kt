@@ -15,50 +15,89 @@ class D4 {
         return result
     }
 
+    /**
+     * Counts occurrences of "XMAS" in the 2D array in all directions: horizontal, vertical, diagonal, and their reverses.
+     *
+     * @param input 2D array of characters
+     * @return the count of "XMAS" occurrences
+     */
     fun count(input: Array<Array<Char>>): Int {
         var count = 0
+        val directions = listOf(
+            Pair(0, 1), Pair(0, -1), Pair(1, 0), Pair(-1, 0), // East, West, South, North
+            Pair(1, 1), Pair(-1, -1), Pair(1, -1), Pair(-1, 1) // South-east, North-west, South-west, North-east
+        )
         for (i in input.indices) {
-            for (j in 0..<input[i].size) {
-                //East
-                if (j + 3 < input[i].size && (input[i][j] == 'X' && input[i][j + 1] == 'M' && input[i][j + 2] == 'A' && input[i][j + 3] == 'S')) {
-                    println("XMAS found East at  row $i, column $j")
+            for (j in input[i].indices) {
+                for ((di, dj) in directions) {
+                    if (isXmas(input, i, j, di, dj)) {
+                        count++
+                    }
+                }
+            }
+        }
+        println(count)
+        return count
+    }
+
+    /**
+     * Checks if "XMAS" is found starting from (i, j) in the direction (di, dj).
+     *
+     * @param input 2D array of characters
+     * @param i starting row index
+     * @param j starting column index
+     * @param di row direction increment
+     * @param dj column direction increment
+     * @return true if "XMAS" is found, false otherwise
+     */
+    private fun isXmas(input: Array<Array<Char>>, i: Int, j: Int, di: Int, dj: Int): Boolean {
+        for (k in 0..3) {
+            val ni = i + k * di
+            val nj = j + k * dj
+            if (ni !in input.indices || nj !in input[ni].indices || input[ni][nj] != "XMAS"[k]) {
+                return false
+            }
+        }
+        return true
+    }
+
+    fun countMas(input: Array<Array<Char>>): Int {
+        var count = 0
+        for (i in input.indices) {
+            for (j in 0..<input[i].size) {/* """
+                    MAS
+                    .A.
+                    MAS
+                """*/
+                if (i - 1 >= 0 && j - 1 >= 0 && i + 1 < input.size && j + 1 < input[i].size && input[i][j] == 'A' && input[i + 1][j + 1] == 'S' && input[i - 1][j + 1] == 'S' && input[i + 1][j - 1] == 'M' && input[i - 1][j - 1] == 'M') {
+                    println("MAS found at row $i, column $j")
+                    count++
+                }/* """
+                  SAM
+                  .A.
+                  SAM
+              """*/
+                else if (i - 1 >= 0 && j - 1 >= 0 && i + 1 < input.size && j + 1 < input[i].size && input[i][j] == 'A' && input[i + 1][j + 1] == 'M' && input[i - 1][j + 1] == 'M' && input[i + 1][j - 1] == 'S' && input[i - 1][j - 1] == 'S') {
+                    println("MAS found at row $i, column $j")
+                    count++
+                }/* """
+                  MAM
+                  .A.
+                  SAS
+              """*/
+                else if (i - 1 >= 0 && j - 1 >= 0 && i + 1 < input.size && j + 1 < input[i].size && input[i][j] == 'A' && input[i + 1][j + 1] == 'S' && input[i - 1][j + 1] == 'M' && input[i + 1][j - 1] == 'S' && input[i - 1][j - 1] == 'M') {
+                    println("MAS found at row $i, column $j")
+                    count++
+                }/* """
+                  SAS
+                  .A.
+                  MAM
+              """*/
+                else if (i - 1 >= 0 && j - 1 >= 0 && i + 1 < input.size && j + 1 < input[i].size && input[i][j] == 'A' && input[i + 1][j + 1] == 'M' && input[i - 1][j + 1] == 'S' && input[i + 1][j - 1] == 'M' && input[i - 1][j - 1] == 'S') {
+                    println("MAS found at row $i, column $j")
                     count++
                 }
-                //West
-                if (j - 3 >= 0 && (input[i][j] == 'X' && input[i][j - 1] == 'M' && input[i][j - 2] == 'A' && input[i][j - 3] == 'S')) {
-                    println("XMAS found West at row $i, column $j")
-                    count++
-                }
-                //South
-                if (i + 3 < input.size && input[i][j] == 'X' && input[i + 1][j] == 'M' && input[i + 2][j] == 'A' && input[i + 3][j] == 'S') {
-                    println("XMAS found South at row $i, column $j")
-                    count++
-                }
-                //North
-                if (i - 3 >= 0 && input[i][j] == 'X' && input[i - 1][j] == 'M' && input[i - 2][j] == 'A' && input[i - 3][j] == 'S') {
-                    println("XMAS found North at row $i, column $j")
-                    count++
-                }
-                //South-east diagonal
-                if (i + 3 < input.size && j + 3 < input[i].size && input[i][j] == 'X' && input[i + 1][j + 1] == 'M' && input[i + 2][j + 2] == 'A' && input[i + 3][j + 3] == 'S') {
-                    println("XMAS found south east at row $i, column $j")
-                    count++
-                }
-                // North-west diagonal
-                if (i - 3 >= 0 && j - 3 >= 0 && input[i][j] == 'X' && input[i - 1][j - 1] == 'M' && input[i - 2][j - 2] == 'A' && input[i - 3][j - 3] == 'S') {
-                    println("XMAS found North west at row $i, column $j")
-                    count++
-                }
-                //South West diagonal
-                if (i + 3 < input.size && j - 3 >= 0 && input[i][j] == 'X' && input[i + 1][j - 1] == 'M' && input[i + 2][j - 2] == 'A' && input[i + 3][j - 3] == 'S') {
-                    println("XMAS found  South West at row $i, column $j")
-                    count++
-                }
-                // North-east diagonal
-                if (i - 3 >= 0 && j + 3 < input[i].size && input[i][j] == 'X' && input[i - 1][j + 1] == 'M' && input[i - 2][j + 2] == 'A' && input[i - 3][j + 3] == 'S') {
-                    println("XMAS found at North east row $i, column $j")
-                    count++
-                }
+
             }
 
         }
@@ -74,5 +113,6 @@ fun main() {
 
     // count for XMAS in the 2D array can be diagonal, horizontal, vertical, reverse diagonal, reverse horizontal, reverse vertical
     D4().count(input)
+    D4().countMas(input)
 }
 

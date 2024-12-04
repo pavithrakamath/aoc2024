@@ -32,5 +32,40 @@ class D4Test {
 
     }
 
+    @Test
+    fun countMas() {
+        val input = """
+            MXS
+            XAM
+            MMS
+        """.trimIndent()
+
+        val array = D4().readFromFile(input.split("\n"))
+        assertEquals(1, D4().countMas(array))
+
+        val input2 = """
+            MXS
+            XAM
+            XMS
+            XAM
+        """.trimIndent()
+        val array2 = D4().readFromFile(input2.split("\n"))
+        assertEquals(0, D4().countMas(array2))
+
+        val input3 = """
+            .M.S......
+            ..A..MSMS.
+            .M.S.MAA..
+            ..A.ASMSM.
+            .M.S.M....
+            ..........
+            S.S.S.S.S.
+            .A.A.A.A..
+            M.M.M.M.M.
+            ..........
+        """.trimIndent()
+        val array3 = D4().readFromFile(input3.split("\n"))
+        assertEquals(9, D4().countMas(array3))
+    }
 }
 
