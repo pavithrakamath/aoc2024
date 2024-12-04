@@ -2,8 +2,12 @@ package com.pk.aoc.d4
 
 class D4 {
 
-//read file D4Input.txt into a 2-dimensional array or size [140][140] each element is an english letter
-
+    /**
+     * Reads the input from the file and converts it into a 2D array of characters.
+     *
+     * @param lines list of strings
+     * @return 2D array of characters
+     */
     fun readFromFile(lines: List<String>): Array<Array<Char>> {
 
         val result = Array(lines.size) { Array(lines[0].length) { ' ' } }
@@ -61,45 +65,33 @@ class D4 {
         return true
     }
 
+    /**
+     * Counts occurrences of "MAS" in the 2D array in all directions: horizontal, vertical, diagonal, and their reverses.
+     * @param input 2D array of characters
+     */
     fun countMas(input: Array<Array<Char>>): Int {
         var count = 0
-        for (i in input.indices) {
-            for (j in 0..<input[i].size) {/* """
-                    MAS
-                    .A.
-                    MAS
-                """*/
-                if (i - 1 >= 0 && j - 1 >= 0 && i + 1 < input.size && j + 1 < input[i].size && input[i][j] == 'A' && input[i + 1][j + 1] == 'S' && input[i - 1][j + 1] == 'S' && input[i + 1][j - 1] == 'M' && input[i - 1][j - 1] == 'M') {
-                    println("MAS found at row $i, column $j")
-                    count++
-                }/* """
-                  SAM
-                  .A.
-                  SAM
-              """*/
-                else if (i - 1 >= 0 && j - 1 >= 0 && i + 1 < input.size && j + 1 < input[i].size && input[i][j] == 'A' && input[i + 1][j + 1] == 'M' && input[i - 1][j + 1] == 'M' && input[i + 1][j - 1] == 'S' && input[i - 1][j - 1] == 'S') {
-                    println("MAS found at row $i, column $j")
-                    count++
-                }/* """
-                  MAM
-                  .A.
-                  SAS
-              """*/
-                else if (i - 1 >= 0 && j - 1 >= 0 && i + 1 < input.size && j + 1 < input[i].size && input[i][j] == 'A' && input[i + 1][j + 1] == 'S' && input[i - 1][j + 1] == 'M' && input[i + 1][j - 1] == 'S' && input[i - 1][j - 1] == 'M') {
-                    println("MAS found at row $i, column $j")
-                    count++
-                }/* """
-                  SAS
-                  .A.
-                  MAM
-              """*/
-                else if (i - 1 >= 0 && j - 1 >= 0 && i + 1 < input.size && j + 1 < input[i].size && input[i][j] == 'A' && input[i + 1][j + 1] == 'M' && input[i - 1][j + 1] == 'S' && input[i + 1][j - 1] == 'M' && input[i - 1][j - 1] == 'S') {
-                    println("MAS found at row $i, column $j")
-                    count++
+        if (input.size < 3 || input[0].size < 3) {
+            return 0
+        }
+        for (i in 1 until input.size - 1) {
+            for (j in 1 until input[i].size - 1) {
+                val center = input[i][j]
+                val topLeft = input[i - 1][j - 1]
+                val topRight = input[i - 1][j + 1]
+                val bottomLeft = input[i + 1][j - 1]
+                val bottomRight = input[i + 1][j + 1]
+
+                if (center == 'A') {
+                    if ((topLeft == 'M' && topRight == 'S' && bottomLeft == 'M' && bottomRight == 'S') ||
+                        (topLeft == 'S' && topRight == 'M' && bottomLeft == 'S' && bottomRight == 'M') ||
+                        (topLeft == 'M' && topRight == 'M' && bottomLeft == 'S' && bottomRight == 'S') ||
+                        (topLeft == 'S' && topRight == 'S' && bottomLeft == 'M' && bottomRight == 'M')
+                    ) {
+                        count++
+                    }
                 }
-
             }
-
         }
         println(count)
         return count
@@ -111,7 +103,6 @@ fun main() {
     val lines = D4::class.java.getResource("/D4Input.txt").readText().split("\n")
     val input = D4().readFromFile(lines)
 
-    // count for XMAS in the 2D array can be diagonal, horizontal, vertical, reverse diagonal, reverse horizontal, reverse vertical
     D4().count(input)
     D4().countMas(input)
 }
